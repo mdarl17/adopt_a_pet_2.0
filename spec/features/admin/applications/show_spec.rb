@@ -42,13 +42,13 @@ RSpec.describe "Admin Application Show Page" do
     @pet_4 = Pet.create!(adoptable: true, age: 1, breed: "beagle", name: "Toaster", shelter_id: @shelter_3.id)
     @pet_5 = Pet.create!(adoptable: true, age: 4, breed: "pitbull", name: "Hoser", shelter_id: @shelter_3.id)
 
-    @pet_app_1 = PetApplication.create!(pet_id: @pet_1.id, application_id: @app_1.id, status: 1)
-    @pet_app_2 = PetApplication.create!(pet_id: @pet_2.id, application_id: @app_1.id, status: 1)
+    @pet_app_1 = PetApplication.create!(pet_id: @pet_1.id, application_id: @app_1.id, status: 0)
+    @pet_app_2 = PetApplication.create!(pet_id: @pet_2.id, application_id: @app_1.id, status: 0)
     # @pet_app_3 = PetApplication.create!(pet_id: @pet_4.id, application_id: @app_1.id, status: 1)
-    @pet_app_4 = PetApplication.create!(pet_id: @pet_1.id, application_id: @app_2.id, status: 1)
-    @pet_app_5 = PetApplication.create!(pet_id: @pet_5.id, application_id: @app_2.id, status: 1)
-    @pet_app_6 = PetApplication.create!(pet_id: @pet_3.id, application_id: @app_3.id, status: 1)
-    @pet_app_7 = PetApplication.create!(pet_id: @pet_5.id, application_id: @app_3.id, status: 1)
+    @pet_app_4 = PetApplication.create!(pet_id: @pet_1.id, application_id: @app_2.id, status: 0)
+    @pet_app_5 = PetApplication.create!(pet_id: @pet_5.id, application_id: @app_2.id, status: 0)
+    @pet_app_6 = PetApplication.create!(pet_id: @pet_3.id, application_id: @app_3.id, status: 0)
+    @pet_app_7 = PetApplication.create!(pet_id: @pet_5.id, application_id: @app_3.id, status: 0)
   end
 
   describe "approving a pet on an application" do 
@@ -103,11 +103,11 @@ RSpec.describe "Admin Application Show Page" do
   end
 
   describe "approving an application if all pets are approved" do
-    it " approves application if all pets are approved" do
+    it "approves application if all pets are approved" do
       visit "/admin/applications/#{@app_1.id}" 
 
       @app_1.pets.each do |pet| 
-        within "#approve-#{pet.id}" do 
+        within "#approve-#{pet.id}" do
           click_button("Approve")
         end
       end
@@ -131,6 +131,7 @@ RSpec.describe "Admin Application Show Page" do
           end
       
       expect(current_path).to eq("/admin/applications/#{@app_1.id}")
+      save_and_open_page
       application = Application.find(@app_1.id)
       expect(application.status).to eq("Rejected")
       expect(page).to have_content("This Application is Rejected!")
