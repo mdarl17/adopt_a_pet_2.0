@@ -172,5 +172,4 @@ RSpec.describe "Admin Application Show Page" do
       expect(page).to have_content("This Application is Rejected!")
     end
   end
- 
-end 
+end
