@@ -32,8 +32,7 @@ class ApplicationsController < ApplicationController
   end
 
   def update 
-    @application = Application.find(params[:id])
-    @pets = @application.pets
+    application = Application.find(params[:id])
 
     if params[:app_submit] 
       @application.update!({status: "Pending"})
