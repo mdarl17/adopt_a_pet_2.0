@@ -32,23 +32,19 @@ class ApplicationsController < ApplicationController
   end
 
   def update 
-    @application = Application.find(params[:id])
-    @pets = @application.pets
+    application = Application.find(params[:id])
 
-    # if params[:pet_id]
-    #   @pet = Pet.find(params[:pet_id])
-    #   @pet_application = PetApplication.create!({
-    #     pet_id: @pet.id,
-    #     application_id: @application.id
-    #   })
-    # end
-
-    if params[:app_submit] 
-      @application.update!({status: "Pending"})
+    if params[:app_submit]
+      if application.update(status: 1)
+        flash[:notice] = "The update was successful and this application is pending"
+      else
+        flash[:alert] = "Uh-oh, there was an error and the application's status was not updated.
+        Please try again later."
+      end
     end
 
-    # render :show
-    redirect_to "/applications/#{@application.id}"
+    redirect_to "/applications/#{application.id}"
   end
+  
 
 end
