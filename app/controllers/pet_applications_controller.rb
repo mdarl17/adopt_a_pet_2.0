@@ -15,22 +15,38 @@ class PetApplicationsController < ApplicationController
     application = Application.find(params[:app_id])
     pet = Pet.find(params[:pet_id])
     pet_application = application.get_pet_app(pet.id)
-
-    pet_application.update_pet_status(params[:commit])
-
-    if pet_application.status == "Approved"
-      flash[:notice] = "The request to adopt #{pet.name} has been approved!!"
-    elsif pet_application.status == "Rejected"
-      flash[:notice] = "The request to adopt #{pet.name} has been rejected :("
-    else
-      flash[:alert] = "There was a problem and #{pet.name}'s adoption has not yet been approved. Please try again later."
+    
+    
+    if params[:commit] == "Reject"
+      if pet_application.update(status: 2)
+      else
+        flash[:alert] = "Uh-oh. It seems there was a problem processing your request. Please try again later."
+      end
+    end
+    
+    if params[:commit] == "Approve"
+      if pet_application.update(status: 1)
+      else
+        flash[:alert] = "Uh-oh, there was a problem and the application's status was not updated. 
+        Pleast try again later."
+      end
+    end
+    
+    if application.rejected?
+      if application.update(status: 3)
+        flash[:alert] = "This application has been rejected"
+      else
+        "Uh-oh, there was a problem and the application's status was not updated."
+      end
     end
 
-    # if pet_application.update!(status: 2)
-    #   flash[:notice] = "The request to adopt #{pet.name} has been approved!!"
-    # else
-    #   flash[:alert] = "There was a problem and #{pet.name}'s adoption has not yet been approved. Please try again later."
-    # end
+    if application.approved?
+      if application.update(status: 2)
+        flash[:notice] = "This application has been approved!"
+      else
+        flash[:alert] = "Uh-oh, there was a problem and the application's status was not updated."
+      end
+    end
     
     redirect_to "/admin/applications/#{application.id}"
   end
