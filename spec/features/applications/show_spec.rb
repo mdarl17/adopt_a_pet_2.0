@@ -136,7 +136,6 @@ RSpec.describe "pet creation" do
       
       expect(page).to have_content("Hoser")
       expect(page).to have_content("Lobster")
-      
       expect(page).to have_content("Pending")
       
       expect(page).to_not have_button("Adopt this pet")
