@@ -79,7 +79,6 @@ RSpec.describe "Admin Application Show Page" do
   describe "rejecting a pet on an application" do 
     it "there is a 'Reject' button next to every pet on the application" do 
       visit "/admin/applications/#{@app_1.id}"
-
       @app_1.pets.each do |pet| 
         within "#approve-#{pet.id}" do 
           expect(page).to have_content(pet.name)
@@ -100,6 +99,54 @@ RSpec.describe "Admin Application Show Page" do
         end
       end
     end
+  end
+
+  it "after updating each pet application it will check if the application has been accepted (i.e. all pet applications accepted)" do
+    visit "/admin/applications/#{@app_1.id}" 
+
+    @app_1.pets.each do |pet|
+      within "#approve-#{pet.id}" do
+        click_button("Approve")
+      end
+    end
+    updated_app = Application.where(name: @app_1.name)
+
+    expect(updated_app.first.status).to eq("Approved")
+    expect(page).to have_content("This application has been approved!")
+  end
+
+  it "if ANY pet application is 'Rejected', the application is rejected" do
+    visit "/admin/applications/#{@app_1.id}"
+
+    @app_1.pets[0..@app_1.pets.length-2].each do |pet|
+      within "#approve-#{pet.id}" do
+        click_button("Approve")
+      end
+    end
+
+    within "#approve-#{@app_1.pets.last.id}" do 
+      click_button "Reject"
+    end
+
+    updated_app = Application.where(name: @app_1.name)
+
+    expect(updated_app.first.status).to eq("Rejected")
+    expect(page).to have_content("This application has been rejected")
+  end
+
+  it "if a pet application has not been rejected but still has at least one 'Pending' pet application status, the application's status will remain unchanged ('Pending')" do 
+    visit "/admin/applications/#{@app_1.id}"
+    
+    @app_1.pets[0..@app_1.pets.length-2].each do |pet|
+      within "#approve-#{pet.id}" do
+        click_button("Approve")
+      end
+    end
+
+    updated_app = Application.where(name: @app_1.name)
+
+    expect(updated_app.first.status).to eq("Pending")
+    expect(page).to have_content("This application is pending")
   end
 
 end 
