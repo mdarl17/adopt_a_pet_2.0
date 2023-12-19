@@ -6,10 +6,6 @@ class Application < ApplicationRecord
 
   enum status: {"In progress": 0, "Pending": 1, "Approved": 2, "Rejected": 3}
 
-  def pet_search(name) 
-    Pet.where("name = ?", name)
-  end
-
   def get_pet_app(pet_id) 
     PetApplication.where(pet_id: pet_id, application_id: self.id).first
   end
