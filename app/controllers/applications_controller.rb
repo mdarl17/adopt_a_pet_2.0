@@ -39,9 +39,6 @@ class ApplicationsController < ApplicationController
     if params[:app_submit]
       if application.update(status: 1)
         flash[:notice] = "The update was successful and this application is pending"
-      else
-        flash[:alert] = "Uh-oh, there was an error and the application's status was not updated.
-        Please try again later."
       end
     end
 
