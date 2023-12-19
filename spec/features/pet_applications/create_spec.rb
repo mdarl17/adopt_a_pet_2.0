@@ -23,7 +23,6 @@ RSpec.describe "pet_application creation" do
     @pet_4 = Pet.create!(adoptable: true, age: 1, breed: "beagle", name: "Toaster", shelter_id: @shelter.id)
     @pet_5 = Pet.create!(adoptable: true, age: 4, breed: "pitbull", name: "Hoser", shelter_id: @shelter.id)
    
-
     @pet_1_app =PetApplication.create!(pet_id: @pet_1.id, application_id: @app_1.id)
     @app_1.pets << @pet_2
     @app_1.pets << @pet_3
@@ -43,8 +42,7 @@ RSpec.describe "pet_application creation" do
     end
 
   end
-
-
+  
   it "has a button to adopt a pet next to each pet search result" do
     visit "/applications/#{@app_1.id}"
     fill_in(:pet_name, with: "Hoser")
@@ -61,4 +59,5 @@ RSpec.describe "pet_application creation" do
       expect(page).to have_content("Hoser")
     end
   end
+
 end
