@@ -32,6 +32,19 @@ RSpec.describe Pet, type: :model do
     end
   end
 
+    describe "#pet_search(name)" do 
+      it "will perform an 'exact' search among all pets in the system and return any with the same name given in the 'name' argument" do
+        expect(Pet.pet_search("Mr. Pirate")).to eq([@pet_1])
+        expect(Pet.pet_search("mr. pirate")).to eq([])
+        expect(Pet.pet_search("Mr Pirate")).to eq([])
+        expect(Pet.pet_search("mrpirate")).to eq([])
+
+        expect(Pet.pet_search("Clawdia")).to eq([@pet_2])
+        expect(Pet.pet_search("clawdia")).to eq([])
+        expect(Pet.pet_search("clawda")).to eq([])
+      end
+    end
+
   describe "instance methods" do
     describe ".shelter_name" do
       it "returns the shelter name for the given pet" do
