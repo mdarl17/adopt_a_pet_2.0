@@ -22,11 +22,7 @@ class Application < ApplicationRecord
   end
 
   def rejected? 
-    num_pets_approved = pet_applications.select("COUNT(pet_applications.status) AS pet_app_status").where("pet_applications.status = 2")[0].pet_app_status > 0
-  end
-  
-  def pending? 
-    num_pets_pending = pet_applications.select("COUNT(pet_applications.status) AS pet_app_status").where("pet_applications.status = 1")[0].pet_app_status > 0
+    pet_applications.select("COUNT(pet_applications.status) AS pet_app_status").where("pet_applications.status = 2")[0].pet_app_status > 0
   end
 
 end
