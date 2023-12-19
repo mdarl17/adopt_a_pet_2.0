@@ -19,42 +19,26 @@ class PetApplicationsController < ApplicationController
     pet = Pet.find(params[:pet_ident])
     pet_application = application.get_pet_app(pet.id)
     
+    
     if params[:commit] == "Reject"
-      pet_application.update({status: "Rejected"})
+      pet_application.update(status: 2)
     end
-
+    
     if params[:commit] == "Approve"
-      pet_application.update({status: "Approved"})
+      pet_application.update(status: 1)
     end
-
-    if application.check_app_status == "Rejected"
-      if application.update(status: "Rejected")
-        flash[:notice] = "The application has been rejected"
-      else
-        flash[:alert] = "There was a problem trying to update the application status"
+    
+    if application.rejected?
+      if application.update(status: 3)
+        flash[:alert] = "This application has been rejected"
       end
-    elsif application.check_app_status == "Approved"
-      if application.update(status: "Approved")
-        flash[:alert] = "The application has been approved"
-      else
-        flash[:alert] = "There was a problem trying to update the application status"
+    elsif application.approved?
+      if application.update(status: 2)
+        flash[:notice] = "This application has been approved!"
       end
+    else
+      flash[:notice] = "This application is pending"
     end
-
-
-    # if params[:commit] == "Approve"
-    #   if pet_application.update(status: "Approved")
-    #     flash[:notice] = "#{pet.name} has been approved."
-    #   else
-    #     flash[:alert] = "Uh-oh. There was a problem and your changes were not processed"
-    #   end
-    # elsif params[:commit] == "Reject"
-    #   if pet_application.update(status: "Rejected")
-    #     flash[:notice] = "#{pet.name} has been rejected."
-    #   end
-    # end
-
-    # pet_application.update_pet_status(params[:commit])
     redirect_to "/admin/applications/#{application.id}"
   end
 end

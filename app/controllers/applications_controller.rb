@@ -2,9 +2,11 @@ class ApplicationsController < ApplicationController
   def show
     @application = Application.find(params[:id])
     if params[:pet_name].present?
+      # calls 'partial' search class method inherited from ApplicationRecord. (This search is also CASE-INSENSITIVE)
       @pets = Pet.search(params[:pet_name])
     else
-      @pets = @application.pet_search(params[:pet_name])
+      # calls 'exact' search class method in Pet.rb model. (This case is also CASE SENSITIVE)
+      @pets = Pet.pet_search(params[:pet_name])
     end
   end
 
@@ -34,11 +36,13 @@ class ApplicationsController < ApplicationController
   def update 
     application = Application.find(params[:id])
 
-    if params[:app_submit] 
-      @application.update!({status: "Pending"})
+    if params[:app_submit]
+      if application.update(status: 1)
+        flash[:notice] = "The update was successful and this application is pending"
+      end
     end
-    
-    redirect_to "/applications/#{@application.id}"
+
+    redirect_to "/applications/#{application.id}"
   end
 
 end

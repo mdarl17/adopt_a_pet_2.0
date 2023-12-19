@@ -44,7 +44,7 @@ RSpec.describe "Admin Application Show Page" do
 
     @pet_app_1 = PetApplication.create!(pet_id: @pet_1.id, application_id: @app_1.id, status: 0)
     @pet_app_2 = PetApplication.create!(pet_id: @pet_2.id, application_id: @app_1.id, status: 0)
-    # @pet_app_3 = PetApplication.create!(pet_id: @pet_4.id, application_id: @app_1.id, status: 1)
+    @pet_app_3 = PetApplication.create!(pet_id: @pet_4.id, application_id: @app_1.id, status: 0)
     @pet_app_4 = PetApplication.create!(pet_id: @pet_1.id, application_id: @app_2.id, status: 0)
     @pet_app_5 = PetApplication.create!(pet_id: @pet_5.id, application_id: @app_2.id, status: 0)
     @pet_app_6 = PetApplication.create!(pet_id: @pet_3.id, application_id: @app_3.id, status: 0)
@@ -79,7 +79,6 @@ RSpec.describe "Admin Application Show Page" do
   describe "rejecting a pet on an application" do 
     it "there is a 'Reject' button next to every pet on the application" do 
       visit "/admin/applications/#{@app_1.id}"
-
       @app_1.pets.each do |pet| 
         within "#approve-#{pet.id}" do 
           expect(page).to have_content(pet.name)
@@ -102,74 +101,52 @@ RSpec.describe "Admin Application Show Page" do
     end
   end
 
-  describe "approving an application if all pets are approved" do
-    it "approves application if all pets are approved" do
-      visit "/admin/applications/#{@app_1.id}" 
+  it "after updating each pet application it will check if the application has been accepted (i.e. all pet applications accepted)" do
+    visit "/admin/applications/#{@app_1.id}" 
 
-      @app_1.pets.each do |pet| 
-        within "#approve-#{pet.id}" do
-          click_button("Approve")
-        end
+    @app_1.pets.each do |pet|
+      within "#approve-#{pet.id}" do
+        click_button("Approve")
       end
-      expect(current_path).to eq("/admin/applications/#{@app_1.id}")
-      application = Application.find(@app_1.id)
-      expect(application.status).to eq("Approved")
-      expect(page).to have_content("This Application is Approved!")
     end
+    updated_app = Application.where(name: @app_1.name)
 
-    it "doesn't approve the application if one of the pets is rejected" do
-      visit "/admin/applications/#{@app_1.id}" 
-
-      first_pet = @app_1.pets.first
-        within "#approve-#{first_pet.id}" do
-          click_button("Approve")
-        end
-
-      last_pet = @app_1.pets.last
-          within "#approve-#{last_pet.id}" do
-            click_button("Reject")
-          end
-      
-      expect(current_path).to eq("/admin/applications/#{@app_1.id}")
-      save_and_open_page
-      application = Application.find(@app_1.id)
-      expect(application.status).to eq("Rejected")
-      expect(page).to have_content("This Application is Rejected!")
-    end
+    expect(updated_app.first.status).to eq("Approved")
+    expect(page).to have_content("This application has been approved!")
   end
-  describe "approving an application if all pets are approved" do
-    it " approves application if all pets are approved" do
-      visit "/admin/applications/#{@app_1.id}" 
 
-      @app_1.pets.each do |pet| 
-        within "#approve-#{pet.id}" do 
-          click_button("Approve")
-        end
+  it "if ANY pet application is 'Rejected', the application is rejected" do
+    visit "/admin/applications/#{@app_1.id}"
+
+    @app_1.pets[0..@app_1.pets.length-2].each do |pet|
+      within "#approve-#{pet.id}" do
+        click_button("Approve")
       end
-
-      expect(current_path).to eq("/admin/applications/#{@app_1.id}")
-      application = Application.find(@app_1.id)
-      expect(application.status).to eq("Approved")
-      expect(page).to have_content("This Application is Approved!")
     end
 
-    it "doesn't approve the application if one of the pets is rejected" do
-      visit "/admin/applications/#{@app_1.id}" 
-
-      first_pet = @app_1.pets.first
-        within "#approve-#{first_pet.id}" do
-          click_button("Approve")
-        end
-
-      last_pet = @app_1.pets.last
-          within "#approve-#{last_pet.id}" do
-            click_button("Reject")
-          end
-      
-      expect(current_path).to eq("/admin/applications/#{@app_1.id}")
-      application = Application.find(@app_1.id)
-      expect(application.status).to eq("Rejected")
-      expect(page).to have_content("This Application is Rejected!")
+    within "#approve-#{@app_1.pets.last.id}" do 
+      click_button "Reject"
     end
+
+    updated_app = Application.where(name: @app_1.name)
+
+    expect(updated_app.first.status).to eq("Rejected")
+    expect(page).to have_content("This application has been rejected")
   end
-end
+
+  it "if a pet application has not been rejected but still has at least one 'Pending' pet application status, the application's status will remain unchanged ('Pending')" do 
+    visit "/admin/applications/#{@app_1.id}"
+    
+    @app_1.pets[0..@app_1.pets.length-2].each do |pet|
+      within "#approve-#{pet.id}" do
+        click_button("Approve")
+      end
+    end
+
+    updated_app = Application.where(name: @app_1.name)
+
+    expect(updated_app.first.status).to eq("Pending")
+    expect(page).to have_content("This application is pending")
+  end
+
+end 

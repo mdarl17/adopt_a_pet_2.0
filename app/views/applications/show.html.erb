@@ -28,8 +28,7 @@
     <br>
     <h1>Add a Pet to this Application</h1>
     <br>
-    <%= form_with url: "/applications/#{@application.id}", method: :get, local: true do |form| %>
-      <%= form.hidden_field :search_pet  %>
+      <%= form_with url: "/applications/#{@application.id}", method: :get, local: true do |form| %>
       <%= form.label "Search for pet" %>
       <%= form.text_field :pet_name%>
       <%= form.submit "Search" %>
@@ -48,7 +47,7 @@
   <% if !@application.pets.empty? %>
     <section>
       <br><br><br>
-      <%= form_with url: "/applications/#{@application.id}", method: :get, local: true do |form| %>
+      <%= form_with url: "/applications/#{@application.id}", method: :patch, local: true do |form| %>
         <p id="good-owner-label"><%= form.label "Why would you make a good owner?" %></p>
         <p id="good_owner">
           <%= form.text_area :good_owner, size: "70x5", value: nil %> 

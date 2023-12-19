@@ -7,7 +7,11 @@ class Pet < ApplicationRecord
 
   has_many :pet_applications
   has_many :applications, through: :pet_applications
-  
+
+  def self.pet_search(name) 
+    where("name = ?", name)
+  end
+
   def shelter_name
     shelter.name
   end
