@@ -2,9 +2,11 @@ class ApplicationsController < ApplicationController
   def show
     @application = Application.find(params[:id])
     if params[:pet_name].present?
+      # calls 'partial' search class method inherited from ApplicationRecord. (This search is also CASE-INSENSITIVE)
       @pets = Pet.search(params[:pet_name])
     else
-      @pets = @application.pet_search(params[:pet_name])
+      # calls 'exact' search class method in Pet.rb model. (This case is also CASE SENSITIVE)
+      @pets = Pet.pet_search(params[:pet_name])
     end
   end
 
@@ -45,6 +47,5 @@ class ApplicationsController < ApplicationController
 
     redirect_to "/applications/#{application.id}"
   end
-  
 
 end
