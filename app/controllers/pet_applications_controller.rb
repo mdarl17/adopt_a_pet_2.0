@@ -1,19 +1,22 @@
 class PetApplicationsController < ApplicationController
-
   def create
-    application = Application.find(params[:app_id])
+    application = Application.find(params[:id])
 
-    PetApplication.create!({
-        pet_id: params[:pet_id],
-        application_id: application.id
-      })
-
+    pet_application = PetApplication.new({
+      pet_id: params[:pet_ident],
+      application_id: application.id
+    })
+    if pet_application.save
+      flash[:notice] = "#{Pet.find(params[:pet_ident])} has been added to the application."
+    else
+      flash[:notice] = "Uh-oh. There was a problem and #{Pet.find(params[:pet_ident])} has not been added to the application."
+    end
     redirect_to "/applications/#{application.id}"
   end
-
+  
   def update 
-    application = Application.find(params[:app_id])
-    pet = Pet.find(params[:pet_id])
+    application = Application.find(params[:id])
+    pet = Pet.find(params[:pet_ident])
     pet_application = application.get_pet_app(pet.id)
     
     
@@ -38,5 +41,4 @@ class PetApplicationsController < ApplicationController
     end
     redirect_to "/admin/applications/#{application.id}"
   end
-
 end

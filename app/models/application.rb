@@ -6,7 +6,7 @@ class Application < ApplicationRecord
 
   enum status: {"In progress": 0, "Pending": 1, "Approved": 2, "Rejected": 3}
 
-  def get_pet_app(pet_id) 
+  def get_pet_app(pet_id)
     PetApplication.where(pet_id: pet_id, application_id: self.id).first
   end
 

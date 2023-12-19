@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe "pet creation" do
+RSpec.describe "Application Show Page" do
   before(:each) do
     @app_1 = Application.create!(name: "Susan", 
       street: "7654 Clover St", 
@@ -105,8 +105,12 @@ RSpec.describe "pet creation" do
       
       expect(current_path).to eq("/applications/#{@app_1.id}")
       within '#show-pets-on-app' do
-      expect(page).to have_content("Hoser")
+        expect(page).to have_content("Hoser")
       end
+    end
+
+    it "has an 'Adopt this Pet' button next each pet" do 
+      
     end
 
     it "has a section to submit application after adding pets" do

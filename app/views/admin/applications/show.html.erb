@@ -1,6 +1,6 @@
 <h1>Admin Applications</h1> 
 <% @application.pets.each do |pet| %>
-  <%= form_with url: "/pet_applications/#{@application.get_pet_app(pet.id).id}?app_id=#{@application.id}&pet_id=#{pet.id}", method: :patch, local: true do |f|  %>
+  <%= form_with url: "/applications/#{@application.id}/pets?pet_ident=#{pet.id}", data: {turbo: false}, method: :patch, local: true do |f|  %>
     <div id=<%= "approve-#{pet.id}" %>>
       <%= f.label :pet_name, "#{pet.name}" %>
       <% if @application.get_pet_app(pet.id).status == "Pending" %>
@@ -12,3 +12,4 @@
     </div>
   <% end %>
 <% end %>
+<p> This Application is <%= @application.status %>! </p>

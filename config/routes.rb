@@ -2,7 +2,10 @@ Rails.application.routes.draw do
   get "/", to: "application#welcome"
 
   get "/admin/shelters", to: "admin/shelters#index"
+  get "/admin/shelters/:id", to: "admin/shelters#show"
+
   get "/admin/applications/:id", to: "admin/applications#show"
+
 
   get "/shelters", to: "shelters#index"
   get "/shelters/new", to: "shelters#new"
@@ -45,6 +48,6 @@ Rails.application.routes.draw do
   post "/applications", to: "applications#create"
   patch "/applications/:id", to: "applications#update"
 
-  post "/pet_applications", to: "pet_applications#create"
-  patch "/pet_applications/:id", to: "pet_applications#update"
+  post "/applications/:id/pets", to: "pet_applications#create"
+  patch "/applications/:id/pets", to: "pet_applications#update"
 end

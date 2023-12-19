@@ -118,5 +118,19 @@ RSpec.describe Shelter, type: :model do
         expect(@shelter_1.pet_count).to eq(3)
       end
     end
+
+    describe ".get_name" do 
+      it "uses a raw SQL query to return the name of a shelter" do 
+        expect(@shelter_1.get_name).to eq("Aurora shelter")
+        expect(@shelter_2.get_name).to eq("RGV animal shelter")
+      end
+    end
+
+    describe ".get_address" do 
+      it "uses a raw SQL query to return the a shelter's address" do 
+        expect(@shelter_1.get_address).to eq("Aurora, CO")
+        expect(@shelter_2.get_address).to eq("Harlingen, TX")
+      end
+    end
   end
 end
