@@ -19,7 +19,7 @@
   <br>
   <h2 id="hdr1-pets"> My Pets </h2>
   <% @application.pets.each do |pet| %>
-    <p id="pet-name"><%= pet.name %></p>
+    <p id="pet-name"><%= link_to pet.name, "/pets/#{pet.id}" %></p>
   <% end %>
 </section> 
 
@@ -41,7 +41,7 @@
       <% end %>
       </section>
     <% end %>
-  
+
   </section>
 
   <% if !@application.pets.empty? %>
