@@ -20,7 +20,6 @@ class PetApplicationsController < ApplicationController
     pet = Pet.find(params[:pet_ident])
     pet_application = application.get_pet_app(pet.id)
     
-    
     if params[:commit] == "Reject"
       pet_application.update(status: 2)
     end
