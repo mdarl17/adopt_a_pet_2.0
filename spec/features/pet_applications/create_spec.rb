@@ -48,6 +48,8 @@ RSpec.describe "pet_application creation" do
     fill_in(:pet_name, with: "Hoser")
 
     click_button "Search"
+
+    pet_app = PetApplication.last
     
     expect(page).to have_button("Adopt this pet")
     
