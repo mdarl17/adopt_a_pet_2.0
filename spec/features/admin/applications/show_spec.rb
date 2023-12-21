@@ -149,4 +149,43 @@ RSpec.describe "Admin Application Show Page" do
     expect(page).to have_content("This application is pending")
   end
 
+  it "if all pet applications are approved on an application, they should no longer be adoptable" do 
+    visit "/admin/applications/#{@app_1.id}"
+
+    @app_1.pets.each do |pet|
+      within "#approve-#{pet.id}" do
+        click_button("Approve")
+      end
+    end
+    app = Application.first
+    expect(app.status).to eq("Approved")
+
+    visit "/admin/applications/#{@app_2.id}"
+
+    pet_id = @app_2.pet_applications.last.pet.id
+
+    within "#approve-#{pet_id}" do
+      click_button("Approve")
+    end
+
+    app_2 = Application.second
+    expect(app_2.status).to eq("Pending")
+
+    visit "/admin/applications/#{@app_3.id}"
+
+    pet_id_first = @app_3.pet_applications.first.pet.id
+    pet_id_last = @app_3.pet_applications.last.pet.id
+
+    within "#approve-#{pet_id_first}" do
+      click_button("Approve")
+    end
+
+    within "#approve-#{pet_id_last}" do
+      click_button("Reject")
+    end
+ 
+    app_3 = Application.last
+    expect(app_3.status).to eq("Rejected")
+  end
+  
 end 
