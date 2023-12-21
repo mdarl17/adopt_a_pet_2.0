@@ -1,7 +1,7 @@
 <h1><%= @pet.name %></h1>
 <h3>Age: <%=@pet.age %> years old</h3>
 <h3>Breed: <%= @pet.breed %></h3>
-<h3>Adoptable? <%= @pet.adoptable %></h3>
+<h3>Adoptable: <%= @pet.adoptable %></h3>
 <h3>Current home: <%= @pet.shelter_name %></h3>
 
 <p><%= link_to "Update #{@pet.name}", "pets/#{@pet.id}/edit" %></p>
