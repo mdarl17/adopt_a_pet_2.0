@@ -29,7 +29,7 @@ RSpec.describe "Admin Application Show Page" do
       state: "TX", 
       zip: "78215", 
       descr: "Work from home, will always be with them.",
-      status: 2
+      status: 1
     )
 
     @shelter_1 = Shelter.create(name: "Aurora Shelter", city: "Aurora, CO", foster_program: false, rank: 9)
@@ -38,7 +38,7 @@ RSpec.describe "Admin Application Show Page" do
 
     @pet_1 = Pet.create!(adoptable: true, age: 1, breed: "sphynx", name: "Lucille Bald", shelter_id: @shelter_1.id)
     @pet_2 = Pet.create!(adoptable: true, age: 3, breed: "doberman", name: "Lobster", shelter_id: @shelter_1.id)
-    @pet_3 = Pet.create!(adoptable: false, age: 2, breed: "saint bernard", name: "Beethoven", shelter_id: @shelter_2.id)
+    @pet_3 = Pet.create!(adoptable: true, age: 2, breed: "saint bernard", name: "Beethoven", shelter_id: @shelter_2.id)
     @pet_4 = Pet.create!(adoptable: true, age: 1, breed: "beagle", name: "Toaster", shelter_id: @shelter_3.id)
     @pet_5 = Pet.create!(adoptable: true, age: 4, breed: "pitbull", name: "Hoser", shelter_id: @shelter_3.id)
 
@@ -159,17 +159,27 @@ RSpec.describe "Admin Application Show Page" do
     end
     app = Application.first
     expect(app.status).to eq("Approved")
+  end
+
+  it "if some applications have been approved with the rest 'Pending' the application's status should remain 'Pending'" do
 
     visit "/admin/applications/#{@app_2.id}"
 
-    pet_id = @app_2.pet_applications.last.pet.id
+    pet_id = @app_2.pet_applications.first.pet.id
 
     within "#approve-#{pet_id}" do
       click_button("Approve")
     end
 
-    app_2 = Application.second
-    expect(app_2.status).to eq("Pending")
+    updated_app = Application.second 
+
+    expect(updated_app.pet_applications.first.status).to eq("Approved")
+    expect(updated_app.pet_applications.second.status).to eq("Pending")
+
+    expect(updated_app.status).to eq("Pending")
+  end
+  
+  it "if any pet application is 'Rejected,' the application on which it is included is also rejected" do
 
     visit "/admin/applications/#{@app_3.id}"
 
@@ -186,6 +196,25 @@ RSpec.describe "Admin Application Show Page" do
  
     app_3 = Application.last
     expect(app_3.status).to eq("Rejected")
+  end
+
+  it "when a pet is on an 'Approved' application, it should only have a 'Reject' button next to it on any 'Pending' applications it may be associated with" do 
+    visit "/admin/applications/#{@app_1.id}"
+
+    @app_1.pets.each do |pet| 
+      within "#approve-#{pet.id}" do 
+        click_button "Approve"
+      end
+    end
+    
+    app2 = Application.second
+
+    visit "/admin/applications/#{app2.id}"
+
+    within "#approve-#{app2.pets.first.id}" do 
+      expect(page).to_not have_button("Approve")
+      expect(page).to have_button("Reject")
+    end
   end
   
 end 
