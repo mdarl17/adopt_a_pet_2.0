@@ -9,7 +9,8 @@ class PetApplicationsController < ApplicationController
     if pet_application.save
       flash[:notice] = "#{Pet.find(params[:pet_ident])} has been added to the application."
     else
-      flash[:notice] = "Uh-oh. There was a problem and #{Pet.find(params[:pet_ident])} has not been added to the application."
+      # how to test this??
+      flash[:notice] = "Uh-oh. There was a problem with your request. Please try adopting the pet again."
     end
     redirect_to "/applications/#{application.id}"
   end
@@ -34,6 +35,9 @@ class PetApplicationsController < ApplicationController
       end
     elsif application.approved?
       if application.update(status: 2)
+        application.pets.each do |pet_instance| 
+          pet_instance.update!(adoptable: false)
+        end
         flash[:notice] = "This application has been approved!"
       end
     else
