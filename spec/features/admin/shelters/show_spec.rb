@@ -13,5 +13,5 @@ RSpec.describe "Admin Shelter Show Page" do
     expect(page).to have_content(@shelter_1.name)
     expect(page).to have_content(@shelter_1.city)
   end
-
+  
 end
