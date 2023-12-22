@@ -32,7 +32,7 @@ class Shelter < ApplicationRecord
   end
 
   def self.asc_alpha 
-    self.pending_apps.order(:name)
+    self.order(:name)
   end
 
   def get_name 
@@ -52,11 +52,18 @@ class Shelter < ApplicationRecord
   end
 
   def alphabetical_pets
-    adoptable_pets.order(name: :asc)
+    pets.order(:name)
   end
 
   def shelter_pets_filtered_by_age(age_filter)
     adoptable_pets.where("age >= ?", age_filter)
   end
 
+  def average_age 
+    pets.select("AVG(pets.age) AS avg_age")
+        .joins(:shelter)
+        .group("shelters.id")[0]
+        .avg_age
+        .to_f.round(1)
+  end
 end
