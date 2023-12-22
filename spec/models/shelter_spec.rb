@@ -61,13 +61,19 @@ RSpec.describe Shelter, type: :model do
 
     @pet_1 = Pet.create!(adoptable: true, age: 1, breed: "sphynx", name: "Lucille Bald", shelter_id: @shelter_1.id)
     @pet_2 = Pet.create!(adoptable: true, age: 3, breed: "doberman", name: "Lobster", shelter_id: @shelter_1.id)
-    @pet_3 = Pet.create!(adoptable: false, age: 2, breed: "saint bernard", name: "Beethoven", shelter_id: @shelter_2.id)
-    @pet_4 = Pet.create!(adoptable: true, age: 1, breed: "beagle", name: "Toaster", shelter_id: @shelter_3.id)
-    @pet_5 = Pet.create!(adoptable: false, age: 4, breed: "pitbull", name: "Hoser", shelter_id: @shelter_3.id)
-    @pet_6 = Pet.create!(adoptable: true, age: 4, breed: "husky", name: "Juneau", shelter_id: @shelter_3.id)
-    @pet_7 = Pet.create!(adoptable: true, age: 1, breed: "rotweiler/beagle", name: "Curtis", shelter_id: @shelter_4.id)
-    @pet_8 = Pet.create!(adoptable: true, age: 1, breed: "wolf mix", name: "Marley", shelter_id: @shelter_4.id)
-    @pet_9 = Pet.create!(adoptable: true, age: 2, breed: "australian sheep", name: "Chai", shelter_id: @shelter_5.id)
+    @pet_3 = Pet.create!(adoptable: true, age: 3, breed: "yellow lab", name: "Mustard", shelter_id: @shelter_1.id)
+    @pet_4 = Pet.create!(adoptable: false, age: 2, breed: "saint bernard", name: "Beethoven", shelter_id: @shelter_2.id)
+    @pet_5 = Pet.create!(adoptable: false, age: 2, breed: "australian ridgeback", name: "Clifford", shelter_id: @shelter_2.id)
+    @pet_6 = Pet.create!(adoptable: true, age: 1, breed: "beagle", name: "Toaster", shelter_id: @shelter_3.id)
+    @pet_7 = Pet.create!(adoptable: false, age: 4, breed: "pitbull", name: "Hoser", shelter_id: @shelter_3.id)
+    @pet_8 = Pet.create!(adoptable: true, age: 2, breed: "husky", name: "Juneau", shelter_id: @shelter_3.id)
+    @pet_9 = Pet.create!(adoptable: false, age: 1, breed: "dalmation", name: "Spots", shelter_id: @shelter_3.id)
+    @pet_10 = Pet.create!(adoptable: true, age: 2, breed: "dachsund", name: "Wiener", shelter_id: @shelter_3.id)
+    @pet_11 = Pet.create!(adoptable: true, age: 1, breed: "rotweiler/beagle", name: "Curtis", shelter_id: @shelter_4.id)
+    @pet_12 = Pet.create!(adoptable: false, age: 6, breed: "wolf mix", name: "Marley", shelter_id: @shelter_4.id)
+    @pet_13 = Pet.create!(adoptable: true, age: 7, breed: "sheltie", name: "Silver", shelter_id: @shelter_4.id)
+    @pet_14 = Pet.create!(adoptable: true, age: 4, breed: "boxer", name: "Rocky", shelter_id: @shelter_4.id)
+    @pet_15 = Pet.create!(adoptable: true, age: 2, breed: "australian sheep", name: "Chai", shelter_id: @shelter_5.id)
 
     @pet_app_1 = PetApplication.create!(pet_id: @pet_1.id, application_id: @app_1.id, status: 2)
     @pet_app_2 = PetApplication.create!(pet_id: @pet_2.id, application_id: @app_1.id, status: 0)
@@ -93,10 +99,10 @@ RSpec.describe Shelter, type: :model do
         expect(Shelter.order_by_recently_created).to eq([@shelter_3, @shelter_5, @shelter_1, @shelter_4, @shelter_2])
       end
     end
-
+    
     describe "#order_by_number_of_pets" do
     it "orders the shelters by number of pets they have, descending" do
-        expect(Shelter.order_by_number_of_pets).to eq([@shelter_3, @shelter_1, @shelter_4, @shelter_2, @shelter_5])
+      expect(Shelter.order_by_number_of_pets).to eq([@shelter_3, @shelter_4, @shelter_1, @shelter_2, @shelter_5])
       end
     end
 
@@ -107,41 +113,42 @@ RSpec.describe Shelter, type: :model do
     end
 
     describe "#pending_apps" do 
-    it "returns shelters that are associated with pending applications" do 
-        expect(Shelter.pending_apps).to eq([@shelter_1, @shelter_3, @shelter_5])
+    it "returns shelters, alphabetically (ascending), that are associated with pending applications" do 
+        expect(Shelter.pending_apps).to eq([@shelter_1, @shelter_3, @shelter_2])
       end
     end
 
     describe "#asc_alpha" do 
       it "orders shelters by name, ascending" do 
-        expect(Shelter.asc_alpha).to eq([@shelter_1, @shelter_5, @shelter_3])
+        expect(Shelter.asc_alpha).to eq([@shelter_1, @shelter_4, @shelter_5, @shelter_3, @shelter_2])
       end
     end
   end
 
+  describe "#alphabetical_pets" do
+    it "returns pets associated with the given shelter in alphabetical name order" do
+      expect(Shelter.third.alphabetical_pets).to eq([@pet_7, @pet_8, @pet_9, @pet_6, @pet_10])
+    end
+  end
+  
   describe "instance methods" do
     describe ".adoptable_pets" do
       it "only returns pets that are adoptable" do
-        expect(@shelter_1.adoptable_pets).to eq([@pet_1, @pet_2])
-        expect(@shelter_3.adoptable_pets).to eq([@pet_4, @pet_6])
+        expect(@shelter_1.adoptable_pets).to eq([@pet_1, @pet_2, @pet_3])
+        expect(@shelter_3.adoptable_pets).to eq([@pet_6, @pet_8, @pet_10])
       end
     end
 
-    describe ".alphabetical_pets" do
-      it "returns pets associated with the given shelter in alphabetical name order" do
-        expect(@shelter_3.alphabetical_pets).to eq([@pet_6, @pet_4])
-      end
-    end
 
     describe ".shelter_pets_filtered_by_age" do
-      it "filters a shelter's pets by age" do
-        expect(@shelter_3.shelter_pets_filtered_by_age(3)).to eq([@pet_6])
+      it "filters a shelter's adoptable pets by age" do
+        expect(@shelter_3.shelter_pets_filtered_by_age(2)).to eq([@pet_8, @pet_10])
       end
     end
 
     describe ".pet_count" do
       it "returns the number of pets at the given shelter" do
-        expect(@shelter_3.pet_count).to eq(3)
+        expect(@shelter_3.pet_count).to eq(5)
       end
     end
 
@@ -156,6 +163,16 @@ RSpec.describe Shelter, type: :model do
       it "uses a raw SQL query to return the a shelter's address" do 
         expect(@shelter_1.get_address).to eq("Aurora, CO")
         expect(@shelter_2.get_address).to eq("Harlingen, TX")
+      end
+    end
+
+    describe ".average_age" do 
+      it "calculates the average age of adoptable pets at a shelter" do 
+        expect(@shelter_1.average_age).to eq(2.3)
+        expect(@shelter_2.average_age).to eq(2.0)
+        expect(@shelter_3.average_age).to eq(2.0)
+        expect(@shelter_4.average_age).to eq(4.5)
+        expect(@shelter_5.average_age).to eq(2.0)
       end
     end
   end
