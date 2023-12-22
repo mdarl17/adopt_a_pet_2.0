@@ -10,8 +10,8 @@ class Shelter < ApplicationRecord
   end
 
   def self.order_by_number_of_pets
-    select("shelters.*, count(pets.id) AS pets_count")
-      .joins("LEFT OUTER JOIN pets ON pets.shelter_id = shelters.id")
+    select("shelters.*, count(*) AS pets_count")
+      .joins("INNER JOIN pets ON pets.shelter_id = shelters.id")
       .group("shelters.id")
       .order("pets_count DESC")
   end
@@ -29,6 +29,10 @@ class Shelter < ApplicationRecord
       .distinct
       .joins(pets: { pet_applications: :application })
       .where("applications.status = ?", 1)
+  end
+
+  def self.asc_alpha 
+    self.pending_apps.order(:name)
   end
 
   def get_name 
