@@ -66,4 +66,8 @@ class Shelter < ApplicationRecord
         .avg_age
         .to_f.round(1)
   end
+
+  def num_pets_adopted 
+    pets.where(adoptable: false).count
+  end
 end
