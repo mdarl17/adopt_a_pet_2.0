@@ -1,6 +1,7 @@
 <h1> <%= @shelter.get_name %> </h1>
 <p><%= @shelter.get_address %> </p>
-<section>
+<section class="statistics">
   <h2>Statistics</h2>
-  <%= "Average Age of Adoptable Pets: #{@shelter.average_age}" %>
+  <p><%= "Average Age of Adoptable Pets: #{@shelter.average_age}" %></p>
+  <p><%= "No. Adoptable Pets: #{@shelter.adoptable_pets.count}" %></p>
 </section>
