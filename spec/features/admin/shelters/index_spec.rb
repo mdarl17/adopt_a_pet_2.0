@@ -110,5 +110,34 @@ RSpec.describe "Admin Shelters Index page" do
       expect("Fancy Pets of Colorado").to appear_before("RGV Animal Shelter")
     end
   end
+
+  it "each shelter's name is a link to its show page" do 
+    visit "/admin/shelters" 
+
+    expect(page).to have_link("Aurora Shelter")
+    expect(page).to have_link("RGV Animal Shelter")
+    expect(page).to have_link("Fancy Pets of Colorado")
+    expect(page).to have_link("Best Friends Animal Society")
+    expect(page).to have_link("Dumb Friends League")
+
+    click_link "Aurora Shelter"
+    expect(current_path).to eq("/shelters/#{@shelter_1.id}")
+
+    visit "/admin/shelters"
+    click_link "RGV Animal Shelter"
+    expect(current_path).to eq("/shelters/#{@shelter_2.id}")
+    
+    visit "/admin/shelters"
+    click_link "Fancy Pets of Colorado"
+    expect(current_path).to eq("/shelters/#{@shelter_3.id}")
+
+    visit "/admin/shelters"
+    click_link "Best Friends Animal Society"
+    expect(current_path).to eq("/shelters/#{@shelter_4.id}")
+
+    visit "/admin/shelters"
+    click_link "Dumb Friends League"
+    expect(current_path).to eq("/shelters/#{@shelter_5.id}")
+  end
   
 end 
