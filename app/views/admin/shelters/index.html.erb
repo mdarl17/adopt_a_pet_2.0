@@ -9,7 +9,7 @@
 <section>
   <h2>Shelters with Pending Applications</h2>
   <ol id="shelters-pending">
-    <% @shelters.pending_apps.each do |shelter| %>
+    <% @shelters.pending_apps.asc_alpha.each do |shelter| %>
       <li><%= shelter.name %></li>
     <% end %>
   </ol>
