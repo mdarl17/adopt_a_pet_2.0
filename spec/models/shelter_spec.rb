@@ -114,7 +114,7 @@ RSpec.describe Shelter, type: :model do
 
     describe "#pending_apps" do 
     it "returns shelters, alphabetically (ascending), that are associated with pending applications" do 
-        expect(Shelter.pending_apps).to eq([@shelter_1, @shelter_3, @shelter_2])
+        expect(Shelter.pending_apps).to eq([@shelter_1, @shelter_2, @shelter_3])
       end
     end
 
@@ -138,7 +138,6 @@ RSpec.describe Shelter, type: :model do
         expect(@shelter_3.adoptable_pets).to eq([@pet_6, @pet_8, @pet_10])
       end
     end
-
 
     describe ".shelter_pets_filtered_by_age" do
       it "filters a shelter's adoptable pets by age" do
@@ -173,6 +172,16 @@ RSpec.describe Shelter, type: :model do
         expect(@shelter_3.average_age).to eq(2.0)
         expect(@shelter_4.average_age).to eq(4.5)
         expect(@shelter_5.average_age).to eq(2.0)
+      end
+    end
+
+    describe ".pets_adopted" do 
+      it "returns the number of pets that have been adopted from a shelter" do 
+        expect(@shelter_1.num_pets_adopted).to eq(0)
+        expect(@shelter_2.num_pets_adopted).to eq(2)
+        expect(@shelter_3.num_pets_adopted).to eq(2)
+        expect(@shelter_4.num_pets_adopted).to eq(1)
+        expect(@shelter_5.num_pets_adopted).to eq(0)
       end
     end
   end
