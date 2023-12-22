@@ -13,16 +13,6 @@ RSpec.describe Shelter, type: :model do
   end
 
   before(:each) do
-    @shelter_1 = Shelter.create(name: "Aurora shelter", city: "Aurora, CO", foster_program: false, rank: 9)
-    @shelter_2 = Shelter.create(name: "RGV animal shelter", city: "Harlingen, TX", foster_program: false, rank: 5)
-    @shelter_3 = Shelter.create(name: "Fancy pets of Colorado", city: "Denver, CO", foster_program: true, rank: 10)
-
-    @pet_1 = @shelter_1.pets.create(name: "Mr. Pirate", breed: "tuxedo shorthair", age: 5, adoptable: false)
-    @pet_2 = @shelter_1.pets.create(name: "Clawdia", breed: "shorthair", age: 3, adoptable: true)
-    @pet_3 = @shelter_3.pets.create(name: "Lucille Bald", breed: "sphynx", age: 8, adoptable: true)
-    @pet_4 = @shelter_1.pets.create(name: "Ann", breed: "ragdoll", age: 5, adoptable: true)
-    @pet_5 = Pet.create!(adoptable: true, age: 4, breed: "pitbull", name: "Hoser", shelter_id: @shelter_3.id)
-
     @app_1 = Application.create!(
       name: "Susan", 
       street: "7654 Clover St", 
@@ -53,13 +43,42 @@ RSpec.describe Shelter, type: :model do
       status: 2
     )
 
+    @app_4 = Application.create!(
+      name: "Matt", 
+      street: "2636 Vrain St", 
+      city: "Charlotte", 
+      state: "NC", 
+      zip: "44140", 
+      descr: "Big yard, no other pets, will spoil them.",
+      status: 0
+    )
+      
+    @shelter_1 = Shelter.create(name: "Aurora Shelter", city: "Aurora, CO", foster_program: false, rank: 9, created_at: Date.today-3)
+    @shelter_2 = Shelter.create(name: "RGV Animal Shelter", city: "Harlingen, TX", foster_program: false, rank: 5, created_at: Date.today-7)
+    @shelter_3 = Shelter.create(name: "Fancy Pets of Colorado", city: "Denver, CO", foster_program: true, rank: 10, created_at: Date.today)
+    @shelter_4 = Shelter.create(name: "Best Friends Animal Society", city: "Kanab, UT", foster_program: true, rank: 1, created_at: Date.today-5)
+    @shelter_5 = Shelter.create(name: "Dumb Friends League", city: "Littleton, CO", foster_program: true, rank: 3, created_at: Date.today-2)
+
+    @pet_1 = Pet.create!(adoptable: true, age: 1, breed: "sphynx", name: "Lucille Bald", shelter_id: @shelter_1.id)
+    @pet_2 = Pet.create!(adoptable: true, age: 3, breed: "doberman", name: "Lobster", shelter_id: @shelter_1.id)
+    @pet_3 = Pet.create!(adoptable: false, age: 2, breed: "saint bernard", name: "Beethoven", shelter_id: @shelter_2.id)
+    @pet_4 = Pet.create!(adoptable: true, age: 1, breed: "beagle", name: "Toaster", shelter_id: @shelter_3.id)
+    @pet_5 = Pet.create!(adoptable: false, age: 4, breed: "pitbull", name: "Hoser", shelter_id: @shelter_3.id)
+    @pet_6 = Pet.create!(adoptable: true, age: 4, breed: "husky", name: "Juneau", shelter_id: @shelter_3.id)
+    @pet_7 = Pet.create!(adoptable: true, age: 1, breed: "rotweiler/beagle", name: "Curtis", shelter_id: @shelter_4.id)
+    @pet_8 = Pet.create!(adoptable: true, age: 1, breed: "wolf mix", name: "Marley", shelter_id: @shelter_4.id)
+    @pet_9 = Pet.create!(adoptable: true, age: 2, breed: "australian sheep", name: "Chai", shelter_id: @shelter_5.id)
+
     @pet_app_1 = PetApplication.create!(pet_id: @pet_1.id, application_id: @app_1.id, status: 2)
     @pet_app_2 = PetApplication.create!(pet_id: @pet_2.id, application_id: @app_1.id, status: 0)
     @pet_app_3 = PetApplication.create!(pet_id: @pet_4.id, application_id: @app_1.id, status: 0)
-    @pet_app_4 = PetApplication.create!(pet_id: @pet_1.id, application_id: @app_2.id, status: 1)
-    @pet_app_5 = PetApplication.create!(pet_id: @pet_5.id, application_id: @app_2.id, status: 0)
-    @pet_app_6 = PetApplication.create!(pet_id: @pet_3.id, application_id: @app_3.id, status: 1)
-    @pet_app_7 = PetApplication.create!(pet_id: @pet_5.id, application_id: @app_3.id, status: 0)
+    @pet_app_4 = PetApplication.create!(pet_id: @pet_1.id, application_id: @app_3.id, status: 1)
+    @pet_app_5 = PetApplication.create!(pet_id: @pet_5.id, application_id: @app_3.id, status: 0)
+    @pet_app_6 = PetApplication.create!(pet_id: @pet_9.id, application_id: @app_2.id, status: 1)
+    @pet_app_7 = PetApplication.create!(pet_id: @pet_5.id, application_id: @app_2.id, status: 2)
+    @pet_app_8 = PetApplication.create!(pet_id: @pet_3.id, application_id: @app_4.id, status: 0)
+    @pet_app_9 = PetApplication.create!(pet_id: @pet_7.id, application_id: @app_4.id, status: 0)
+    @pet_app_10 = PetApplication.create!(pet_id: @pet_8.id, application_id: @app_4.id, status: 0)
   end
 
   describe "class methods" do
@@ -71,25 +90,31 @@ RSpec.describe Shelter, type: :model do
 
     describe "#order_by_recently_created" do
       it "returns shelters with the most recently created first" do
-        expect(Shelter.order_by_recently_created).to eq([@shelter_3, @shelter_2, @shelter_1])
+        expect(Shelter.order_by_recently_created).to eq([@shelter_3, @shelter_5, @shelter_1, @shelter_4, @shelter_2])
       end
     end
 
     describe "#order_by_number_of_pets" do
-      it "orders the shelters by number of pets they have, descending" do
-        expect(Shelter.order_by_number_of_pets).to eq([@shelter_1, @shelter_3, @shelter_2])
+    it "orders the shelters by number of pets they have, descending" do
+        expect(Shelter.order_by_number_of_pets).to eq([@shelter_3, @shelter_1, @shelter_4, @shelter_2, @shelter_5])
       end
     end
 
     describe "#reverse_alpha" do 
       it "displays shelters in reverse alphabetical order using shelter name" do 
-        expect(Shelter.reverse_alpha).to eq([@shelter_2, @shelter_3, @shelter_1])
+        expect(Shelter.reverse_alpha).to eq([@shelter_2, @shelter_3, @shelter_5, @shelter_4, @shelter_1])
       end
     end
 
     describe "#pending_apps" do 
-      it "has a section where only shelters that have a pet(s) with a 'pending' application status are displayed" do 
-        expect(Shelter.pending_apps).to eq([@shelter_1, @shelter_3])
+    it "returns shelters that are associated with pending applications" do 
+        expect(Shelter.pending_apps).to eq([@shelter_1, @shelter_3, @shelter_5])
+      end
+    end
+
+    describe "#asc_alpha" do 
+      it "orders shelters by name, ascending" do 
+        expect(Shelter.asc_alpha).to eq([@shelter_1, @shelter_5, @shelter_3])
       end
     end
   end
@@ -97,32 +122,33 @@ RSpec.describe Shelter, type: :model do
   describe "instance methods" do
     describe ".adoptable_pets" do
       it "only returns pets that are adoptable" do
-        expect(@shelter_1.adoptable_pets).to eq([@pet_2, @pet_4])
+        expect(@shelter_1.adoptable_pets).to eq([@pet_1, @pet_2])
+        expect(@shelter_3.adoptable_pets).to eq([@pet_4, @pet_6])
       end
     end
 
     describe ".alphabetical_pets" do
       it "returns pets associated with the given shelter in alphabetical name order" do
-        expect(@shelter_1.alphabetical_pets).to eq([@pet_4, @pet_2])
+        expect(@shelter_3.alphabetical_pets).to eq([@pet_6, @pet_4])
       end
     end
 
     describe ".shelter_pets_filtered_by_age" do
-      it "filters the shelter pets based on given params" do
-        expect(@shelter_1.shelter_pets_filtered_by_age(5)).to eq([@pet_4])
+      it "filters a shelter's pets by age" do
+        expect(@shelter_3.shelter_pets_filtered_by_age(3)).to eq([@pet_6])
       end
     end
 
     describe ".pet_count" do
       it "returns the number of pets at the given shelter" do
-        expect(@shelter_1.pet_count).to eq(3)
+        expect(@shelter_3.pet_count).to eq(3)
       end
     end
 
     describe ".get_name" do 
       it "uses a raw SQL query to return the name of a shelter" do 
-        expect(@shelter_1.get_name).to eq("Aurora shelter")
-        expect(@shelter_2.get_name).to eq("RGV animal shelter")
+        expect(@shelter_1.get_name).to eq("Aurora Shelter")
+        expect(@shelter_2.get_name).to eq("RGV Animal Shelter")
       end
     end
 
