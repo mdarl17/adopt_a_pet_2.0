@@ -50,7 +50,7 @@ RSpec.describe Shelter, type: :model do
       state: "NC", 
       zip: "44140", 
       descr: "Big yard, no other pets, will spoil them.",
-      status: 0
+      status: 1
     )
       
     @shelter_1 = Shelter.create(name: "Aurora Shelter", city: "Aurora, CO", foster_program: false, rank: 9, created_at: Date.today-3)
@@ -182,6 +182,13 @@ RSpec.describe Shelter, type: :model do
         expect(@shelter_3.num_pets_adopted).to eq(2)
         expect(@shelter_4.num_pets_adopted).to eq(1)
         expect(@shelter_5.num_pets_adopted).to eq(0)
+      end
+    end
+
+    describe ".action_required" do 
+      it "returns any pet with a 'Pending' pet application status, and that is also on a 'Pending' application" do 
+        expect(@shelter_1.action_required.sort).to eq([@pet_2, @pet_3].sort)
+        expect(@shelter_3.action_required.sort).to eq([@pet_7, @pet_8].sort)
       end
     end
   end
