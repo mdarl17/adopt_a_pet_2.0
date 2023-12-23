@@ -20,4 +20,8 @@ class Pet < ApplicationRecord
     where(adoptable: true)
   end
 
+  def self.alphabetical 
+    order(:name)
+  end
+
 end
