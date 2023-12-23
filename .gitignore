@@ -30,4 +30,12 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
+# Ignore SimpleCov files
 /coverage
+
+# Ignore TODO list that will be deleted at project's completion
+
+/todo.txt
+todo.txt
+/todo*
+todo*
