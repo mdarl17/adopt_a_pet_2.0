@@ -7,7 +7,9 @@ class Application < ApplicationRecord
   enum status: {"In progress": 0, "Pending": 1, "Approved": 2, "Rejected": 3}
 
   def get_pet_app(pet_id)
-    PetApplication.where(pet_id: pet_id, application_id: self.id).first
+    pet_app = PetApplication.where(pet_id: pet_id, application_id: self.id)
+    return pet_app.first if pet_app.count > 0
+    return nil
   end
 
   def approved? 
