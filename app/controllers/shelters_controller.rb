@@ -9,6 +9,10 @@ class SheltersController < ApplicationController
     end
   end
 
+  #TODO: Is this RESTful? Is this best way to handle
+  # a 'filtered index' page (i.e. prefixed with a differrent model to which it is directly associated).
+  # Is this preferable way to implement Mid-Mod code??
+
   def pets
     @shelter = Shelter.find(params[:shelter_id])
 
