@@ -89,5 +89,16 @@ RSpec.describe "Admin Shelter Show Page" do
       expect(page).to have_content("Chai")
     end
   end
+
+  it "in the Action Required section next to each pet's name is a link to the admin application show page where users can update the pet applications' status" do 
+    visit "/admin/shelters/#{@shelter_1.id}"
+
+    within "#act-req-#{@shelter_1.id}-#{@pet_1.id}" do 
+      expect(page).to have_content(@pet_1.name)
+      expect(page).to have_link("update now")
+      click_link "update now"
+      expect(current_path).to eq("/admin/applications/#{@app_1.id}")
+    end
+  end
   
 end
