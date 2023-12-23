@@ -13,7 +13,7 @@ class SheltersController < ApplicationController
     @shelter = Shelter.find(params[:shelter_id])
 
     if params[:sort] == "alphabetical"
-      @shelter_pets = @shelter.adoptable_pets.alphabetical_pets
+      @shelter_pets = @shelter.pets.adoptable.alphabetical
     elsif params[:age]
       @shelter_pets = @shelter.shelter_pets_filtered_by_age(params[:age])
     else
