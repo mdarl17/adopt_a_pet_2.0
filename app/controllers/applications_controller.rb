@@ -1,6 +1,7 @@
 class ApplicationsController < ApplicationController
   def show
     @application = Application.find(params[:id])
+
     if params[:pet_name].present?
       # calls 'partial' search class method inherited from ApplicationRecord. (This search is also CASE-INSENSITIVE)
       @pets = Pet.search(params[:pet_name])
@@ -35,7 +36,7 @@ class ApplicationsController < ApplicationController
 
   def update 
     application = Application.find(params[:id])
-
+    
     if params[:app_submit]
       if application.update(status: 1)
         flash[:notice] = "The update was successful and this application is pending"
