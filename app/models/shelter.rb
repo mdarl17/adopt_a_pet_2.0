@@ -74,5 +74,5 @@ class Shelter < ApplicationRecord
   def action_required 
     pets.distinct.joins(applications: :pet_applications).where("applications.status = 1 AND pet_applications.status = 0")
   end
-  
+
 end
