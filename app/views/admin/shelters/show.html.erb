@@ -9,6 +9,6 @@
 <section class="action-required">
   <h2>Action Required</h2>
   <% @shelter.action_required.each do |pet| %>
-    <%= pet.name %>
+    <span id=<%= "act-req-#{@shelter.id}-#{pet.id}"%>><%= pet.name %>&nbsp&nbsp&nbsp <%= link_to "update now", "/admin/applications/#{@shelter.get_app_id(pet.id)}" %></span>
   <% end %>
 </section>
