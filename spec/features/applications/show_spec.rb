@@ -44,14 +44,16 @@ RSpec.describe "Application Show Page" do
       visit "/applications/#{@app_1.id}"
 
       expect(page).to have_content("Lucille Bald")
-      # expect(page).to have_content("In Progress")
+      expect(page).to have_content("In progress")
 
       expect(page).to have_content("Beethoven")
-      # expect(page).to have_content("In Progress")
+      expect(page).to have_content("In progress")
     end
 
     it "has a link to add a pet to an application" do
       visit "/applications/#{@app_1.id}"
+
+      @app_1.update!(status: 0)
 
       expect(page).to have_content("Add a Pet to this Application")
     end
