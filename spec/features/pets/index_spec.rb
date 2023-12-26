@@ -81,5 +81,25 @@ RSpec.describe "the pets index" do
     expect(page).to have_content(pet_2.name)
     expect(page).to_not have_content(pet_3.name)
   end
+
+  it "has a checkbox to show all pets or only the adoptable pets (default is adoptable only => unchecked)" do 
+    visit "/pets"
+
+    shelter = Shelter.create(name: "Aurora shelter", city: "Aurora, CO", foster_program: false, rank: 9)
+
+    pet_1 = Pet.create(adoptable: true, age: 1, breed: "sphynx", name: "Lucille Bald", shelter_id: shelter.id)
+    pet_2 = Pet.create(adoptable: false, age: 3, breed: "doberman", name: "Lobster", shelter_id: shelter.id)
+
+    expect(page).to have_field("adoptable", checked: "yes")
+    expect(page).to have_content(pet_1.name)
+    expect(page).to have_content(pet_1.breed)
+    expect(page).to have_content(pet_1.age)
+    expect(page).to have_content(shelter.name)
+
+    expect(page).to_not have_content(pet_2.name)
+    expect(page).to_not have_content(pet_2.breed)
+    expect(page).to_not have_content(pet_2.age)
+    expect(page).to_not have_content(shelter.name)
+  end
   
 end
