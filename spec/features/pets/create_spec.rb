@@ -21,14 +21,20 @@ RSpec.describe "pet creation" do
     context "given valid data" do
       it "creates the pet and redirects to the shelter pets index" do
         visit "/shelters/#{@shelter.id}/pets/new"
-
+        
         fill_in "Name", with: "Bumblebee"
         fill_in "Age", with: 1
         fill_in "Breed", with: "Welsh Corgi"
-        check "Adoptable"
+        check :adoptable
         click_button "Save"
+
         expect(page).to have_current_path("/shelters/#{@shelter.id}/pets")
         expect(page).to have_content("Bumblebee")
+        expect(page).to have_content("Age: 1")
+        expect(page).to have_content("Breed: Welsh Corgi")
+        expect(page).to have_content("Bumblebee can be adopted from Aurora shelter!")
+        expect(page).to have_link("Edit Bumblebee")
+        expect(page).to have_link("Delete Bumblebee")
       end
     end
 
