@@ -10,7 +10,7 @@
   <%= f.number_field :age %>
 
   <%= f.label :adoptable %>
-  <%= f.check_box :adoptable, value: true %>
+  <%= f.check_box :adoptable, { checked: true }, "true", "false" %>
 
   <%= f.submit %>
 <% end %>
