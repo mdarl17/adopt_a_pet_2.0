@@ -1,12 +1,17 @@
 <h1>All pets</h1>
 <%= link_to "Start an Application", "/applications/new" %>
 <%= form_with url: "/pets", method: :get, local: true do |f| %>
+<br>
   <%= f.label :search %>
   <%= f.text_field :search %>
   <%= f.submit "Search" %>
 <% end %>
+<br>
+
+<%= link_to "Show all", "/pets?pets=all" %>
 
 <% @pets.each do |pet| %>
+<section id=<%= "pet-idx-#{pet.id}" %>>
   <h3><%= pet.name %></h3>
   <p>Age: <%= pet.age %></p>
   <p>Breed: <%= pet.breed %></p>
@@ -14,4 +19,5 @@
   <p>You can find <%= pet.name %> at <%= pet.shelter_name %>!</p>
   <%= link_to "Edit #{pet.name}", "/pets/#{pet.id}/edit" %>
   <%= link_to "Delete #{pet.name}", "/pets/#{pet.id}", data: { turbo_method: :delete } %>
+</section>
 <% end %>
