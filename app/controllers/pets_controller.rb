@@ -2,6 +2,8 @@ class PetsController < ApplicationController
   def index
     if params[:search].present?
       @pets = Pet.search(params[:search])
+    elsif params[:pets] == "all"
+      @pets = Pet.all
     else
       @pets = Pet.adoptable
     end
@@ -41,6 +43,7 @@ class PetsController < ApplicationController
   end
 
   def destroy
+    # require 'pry'; binding.pry
     Pet.find(params[:id]).destroy
     redirect_to "/pets"
   end
