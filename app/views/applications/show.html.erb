@@ -24,38 +24,32 @@
 </section> 
 
 <% if @application.status == "In progress" %>
-  <section> 
-    <br>
-    <h1>Add a Pet to this Application</h1>
-    <br>
-      <%= form_with url: "/applications/#{@application.id}", method: :get, local: true do |form| %>
-      <%= form.label "Search for pet" %>
-      <%= form.text_field :pet_name%>
-      <%= form.submit "Search" %>
-    <% end %>
-  
-    <% @pets.each do |pet| %> 
-      <%= form_with url: "/applications/#{@application.id}/pets?pet_ident=#{pet.id}", method: :post, id: "show-#{pet.id}", local: true do |form| %>
-        <%= form.label pet.name %>
-        <%= form.submit "Adopt this pet" %>
-      <% end %>
-      </section>
-    <% end %>
+  <br>
+  <h1>Add a Pet to this Application</h1>
+  <br>
+  <%= form_with url: "/applications/#{@application.id}", method: :get, local: true do |form| %>
+  <%= form.label "Search for pet" %>
+  <%= form.text_field :pet_name%>
+  <%= form.submit "Search" %>
+<% end %>
 
-  </section>
+  <% @pets.each do |pet| %> 
+    <%= form_with url: "/applications/#{@application.id}/pets?pet_ident=#{pet.id}", method: :post, id: "show-#{pet.id}", local: true do |form| %>
+      <%= form.label pet.name %>
+      <%= form.submit "Adopt this pet" %>
+    <% end %>
+  <% end %>
 
   <% if !@application.pets.empty? %>
-    <section>
-      <br><br><br>
-      <%= form_with url: "/applications/#{@application.id}", method: :patch, local: true do |form| %>
-        <p id="good-owner-label"><%= form.label "Why would you make a good owner?" %></p>
-        <p id="good_owner">
-          <%= form.text_area :good_owner, size: "70x5", value: nil %> 
-        </p>
-      <% end %>
-      <h3>Submit this Application</h3>
-      <%= button_to "Submit this application", "/applications/#{@application.id}?app_submit=true", method: :patch %>
-      <br><br><br><br><br><br>
-    </section>
+    <br><br><br>
+    <%= form_with url: "/applications/#{@application.id}", method: :patch, local: true do |form| %>
+      <p id="good-owner-label"><%= form.label "Why would you make a good owner?" %></p>
+      <p id="good_owner">
+        <%= form.text_area :good_owner, size: "70x5", value: nil %> 
+      </p>
+    <% end %>
+    <h3>Submit this Application</h3>
+    <%= button_to "Submit this application", "/applications/#{@application.id}?app_submit=true", method: :patch %>
+    <br><br><br><br><br><br>
   <% end %>
 <% end %>
